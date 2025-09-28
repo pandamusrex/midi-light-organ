@@ -17,13 +17,24 @@ void MidiListener::doWork() {
     bool bDone = false;
 
     std::cout << "entering MidiListener doWork" << std::endl << std::flush;
+    this->openMidi();
+
     do {
-        std::cout << "listening for midi..." << std::endl << std::flush;
+
+        if (this->isMidiEventAvailable()) {
+            std::cout << "a MIDI event is available" << std::endl << std::flush;
+            this->readMidiEvent();
+        } else {
+            std::cout << "a MIDI event is NOT available" << std::endl << std::flush;
+        }
+
         sleep(1);
+
         if (m_pSignallingBool && *m_pSignallingBool) {
             bDone = true;
         }
     } while (!bDone);
+
     std::cout << "exiting MidiListener doWork" << std::endl << std::flush;
 }
 
@@ -35,4 +46,50 @@ void MidiListener::openMidi() {
         SND_SEQ_PORT_CAP_WRITE|SND_SEQ_PORT_CAP_SUBS_WRITE,
         SND_SEQ_PORT_TYPE_APPLICATION
     );
+}
+
+bool MidiListener::isMidiEventAvailable() {
+    return (snd_seq_event_input_pending(m_pSeqHandle, 0) > 0);
+}
+
+void MidiListener::readMidiEvent() {
+    snd_seq_event_t *ev;
+
+    snd_seq_event_input(m_pSeqHandle, &ev);
+    switch (ev->type) {
+        case SND_SEQ_EVENT_CONTROLLER:
+            std::cout << "CONTROL event on Channel:" <<
+                ev->data.control.channel <<
+                " Value:" <<
+                ev->data.control.value <<
+                std::endl <<
+                std::flush;
+            break;
+        case SND_SEQ_EVENT_PITCHBEND:
+            std::cout << "PITCHBEND event on Channel:" <<
+                ev->data.control.channel <<
+                " Value:" <<
+                ev->data.control.value <<
+                std::endl <<
+                std::flush;
+            break;
+        case SND_SEQ_EVENT_NOTEON:
+            std::cout << "NOTE ON event on Channel:" <<
+                ev->data.control.channel <<
+                " Note:" <<
+                ev->data.note.note <<
+                std::endl <<
+                std::flush;
+            break;
+        case SND_SEQ_EVENT_NOTEOFF:
+            std::cout << "NOTE OFF event on Channel:" <<
+                ev->data.control.channel <<
+                " Note:" <<
+                ev->data.note.note <<
+                std::endl <<
+                std::flush;
+            break;
+    }
+
+    snd_seq_free_event(ev);
 }
