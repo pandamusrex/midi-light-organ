@@ -7,6 +7,7 @@ MidiListener::MidiListener() {
     m_pSignallingBool = 0;
     m_pSeqHandle = 0;
     m_nInPort = 0;
+    m_nPollDescriptorsCount = 0;
 }
 
 void MidiListener::setSignallingBool(std::atomic_bool *pSignallingBool) {
@@ -19,21 +20,46 @@ void MidiListener::doWork() {
     std::cout << "entering MidiListener doWork" << std::endl << std::flush;
     this->openMidi();
 
+    struct pollfd *pPollDescriptors = (struct pollfd *)alloca(m_nPollDescriptorsCount * sizeof(struct pollfd));
+
+    snd_seq_poll_descriptors(
+        m_pSeqHandle,
+        pPollDescriptors,
+        m_nPollDescriptorsCount,
+        POLLIN
+    );
+
+    int err;
     do {
-
-        if (this->isMidiEventAvailable()) {
-            std::cout << "a MIDI event is available" << std::endl << std::flush;
-            this->readMidiEvent();
+        if (poll(pPollDescriptors, m_nPollDescriptorsCount, 1000) > 0) {
+            do {
+                snd_seq_event_t *ev;
+                // Read available events without blocking
+                err = snd_seq_event_input_pending(m_pSeqHandle, 1);
+                while (err > 0) {
+                    if (snd_seq_event_input(m_pSeqHandle, &ev) >= 0) {
+                        // Process the event
+                        std::cout <<
+                            "Received MIDI event type: " <<
+                            snd_seq_event_type_name(ev->type) <<
+                            std::endl <<
+                            std::flush;
+                        snd_seq_free_event(ev);
+                    }
+                    err = snd_seq_event_input_pending(seq_handle, 1);
+                }
+            } while (err > 0);
         } else {
-            std::cout << "a MIDI event is NOT available" << std::endl << std::flush;
+            // No events received within the timeout
+            std::cout << "Waiting for events..." << std::endl << std::flush;
         }
-
-        sleep(1);
 
         if (m_pSignallingBool && *m_pSignallingBool) {
             bDone = true;
         }
     } while (!bDone);
+
+    this->closeMidi();
 
     std::cout << "exiting MidiListener doWork" << std::endl << std::flush;
 }
@@ -42,14 +68,18 @@ void MidiListener::openMidi() {
     snd_seq_open(&m_pSeqHandle, "default", SND_SEQ_OPEN_INPUT, 0);
 
     snd_seq_set_client_name(m_pSeqHandle, "Midi Listener");
+
     m_nInPort = snd_seq_create_simple_port(m_pSeqHandle, "listen:in",
         SND_SEQ_PORT_CAP_WRITE|SND_SEQ_PORT_CAP_SUBS_WRITE,
         SND_SEQ_PORT_TYPE_APPLICATION
     );
+
+    m_nPollDescriptorsCount = snd_seq_poll_descriptors_count(m_pSeqHandle, POLLIN);
 }
 
-bool MidiListener::isMidiEventAvailable() {
-    return (snd_seq_event_input_pending(m_pSeqHandle, 0) > 0);
+void MidiListener::closeMidi() {
+    snd_seq_close(m_pSeqHandle);
+    m_nPollDescriptorsCount = 0;
 }
 
 void MidiListener::readMidiEvent() {

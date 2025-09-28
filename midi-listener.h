@@ -14,12 +14,12 @@ class MidiListener {
 
     private:
         void openMidi();
-        bool isMidiEventAvailable();
         void readMidiEvent();
 
         std::atomic_bool *m_pSignallingBool;
         snd_seq_t *m_pSeqHandle;
         int m_nInPort;
+        int m_nPollDescriptorsCount;
 };
 
 #endif
