@@ -7,7 +7,6 @@
 // Image Magick
 #include <Magick++.h>
 #include <magick/image.h>
-#include "pixel-mapper.h"
 
 using rgb_matrix::RGBMatrix;
 using rgb_matrix::Canvas;
@@ -74,8 +73,8 @@ void CopyImageToCanvas(const Magick::Image &image, Canvas *canvas) {
 }
 
 int main(int argc, char **argv) {
-    std::cout << "owobot" << std::endl;
-    std::cout << "Press Ctrl-C to exit" << std::endl;
+    std::cout << "midi-light-organ" << std::endl;
+    // std::cout << "Press Ctrl-C to exit" << std::endl;
 
     RGBMatrix::Options defaults;
     defaults.hardware_mapping = "regular";
@@ -84,6 +83,8 @@ int main(int argc, char **argv) {
     defaults.chain_length = 2;
     defaults.parallel = 1;
     defaults.show_refresh_rate = false;
+    defaults.led_rgb_sequence = "rbg";
+
     Canvas *canvas = RGBMatrix::CreateFromFlags(&argc, &argv, &defaults);
     if (canvas == NULL) {
         std::cout << "Unable to create canvas" << std::endl;
@@ -94,7 +95,9 @@ int main(int argc, char **argv) {
 
     ImageVector images = LoadImageAndScaleImage("media/pandamusrex-128x32.png", 128, 32);
     CopyImageToCanvas(images[0], canvas);
-    sleep(3000);
+
+    std::cout << "sleeping for 5 sec" << std::endl;
+    sleep(5);
 
     canvas->Clear();
     delete canvas;
