@@ -21,3 +21,6 @@ midi-light-organ: midi-light-organ.o $(RGB_LIBRARY)
 
 midi-light-organ.o: midi-light-organ.cpp
 	g++ $(CXXFLAGS) -I$(RGB_INCDIR) $(MAGICK_CXXFLAGS) -c midi-light-organ.cpp
+
+midi-listener.o: midi-listener.cpp
+	g++ $(CXXFLAGS) -c midi-listener.cpp

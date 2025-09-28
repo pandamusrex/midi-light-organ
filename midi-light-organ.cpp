@@ -1,12 +1,26 @@
 #include <iostream>
 #include <unistd.h>
 
+#include <atomic>
+#include <thread>
+
+#include "signal.h"
+
+#include "midi-listener.h"
+
 // Zeller
 #include "led-matrix.h"
 
 // Image Magick
 #include <Magick++.h>
 #include <magick/image.h>
+
+MidiListener *pMidiListener = NULL;
+
+std::atomic_bool signalled = false;
+static void InterruptHandler(int signo) {
+    signalled = true;
+}
 
 using rgb_matrix::RGBMatrix;
 using rgb_matrix::Canvas;
@@ -74,7 +88,11 @@ void CopyImageToCanvas(const Magick::Image &image, Canvas *canvas) {
 
 int main(int argc, char **argv) {
     std::cout << "midi-light-organ" << std::endl;
-    // std::cout << "Press Ctrl-C to exit" << std::endl;
+    std::cout << "Press Ctrl-C to exit" << std::endl;
+
+    signal(SIGTERM, InterruptHandler);
+    signal(SIGINT, InterruptHandler);
+    signal(SIGHUP, InterruptHandler);
 
     RGBMatrix::Options defaults;
     defaults.hardware_mapping = "regular";
@@ -96,8 +114,15 @@ int main(int argc, char **argv) {
     ImageVector images = LoadImageAndScaleImage("media/pandamusrex-128x32.png", 128, 32);
     CopyImageToCanvas(images[0], canvas);
 
-    std::cout << "sleeping for 5 sec" << std::endl;
-    sleep(5);
+    // Start listening to MIDI
+    pMidiListener = new MidiListener();
+    pMidiListener->setSignallingBool(&signalled);
+
+    // Start MIDI Thread
+    std::thread midiThread(&MidiListener::doWork, pMidiListener);
+
+    // Join all the threads and wait for them to complete (or signalling to occur)
+    midiThread.join();
 
     canvas->Clear();
     delete canvas;
