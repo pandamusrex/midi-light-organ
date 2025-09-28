@@ -88,7 +88,9 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-
+    ImageVector images = LoadImageAndScaleImage("media/pandamusrex-128x32.png", 128, 32);
+    CopyImageToCanvas(images[0], canvas);
+    sleep(3000);
 
     canvas->Clear();
     delete canvas;
