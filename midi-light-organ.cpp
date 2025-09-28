@@ -7,6 +7,7 @@
 // Image Magick
 #include <Magick++.h>
 #include <magick/image.h>
+#include "pixel-mapper.h"
 
 using rgb_matrix::RGBMatrix;
 using rgb_matrix::Canvas;
@@ -21,8 +22,8 @@ static ImageVector LoadImageAndScaleImage(const char *filename,
                                           int target_width,
                                           int target_height) {
     ImageVector result;
-
     ImageVector frames;
+
     try {
         readImages(&frames, filename);
     } catch (std::exception &e) {
@@ -88,6 +89,8 @@ int main(int argc, char **argv) {
         std::cout << "Unable to create canvas" << std::endl;
         return 1;
     }
+
+    Magick::InitializeMagick(0);
 
     ImageVector images = LoadImageAndScaleImage("media/pandamusrex-128x32.png", 128, 32);
     CopyImageToCanvas(images[0], canvas);
