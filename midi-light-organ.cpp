@@ -1,3 +1,4 @@
+#include <iostream>
 #include "led-matrix.h"
 
 using rgb_matrix::RGBMatrix;
