@@ -4,6 +4,8 @@
 #include <atomic>
 #include <mutex>
 
+#include <alsa/asoundlib.h>
+
 class MidiListener {
     public:
         MidiListener();
@@ -11,7 +13,11 @@ class MidiListener {
         void doWork();
 
     private:
+        void openMidi();
+
         std::atomic_bool *m_pSignallingBool;
+        snd_seq_t *m_pSeqHandle;
+        int m_nInPort;
 };
 
 #endif
