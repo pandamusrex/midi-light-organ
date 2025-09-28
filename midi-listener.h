@@ -15,6 +15,7 @@ class MidiListener {
     private:
         void openMidi();
         void readMidiEvent();
+        void closeMidi();
 
         std::atomic_bool *m_pSignallingBool;
         snd_seq_t *m_pSeqHandle;

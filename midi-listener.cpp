@@ -33,20 +33,10 @@ void MidiListener::doWork() {
     do {
         if (poll(pPollDescriptors, m_nPollDescriptorsCount, 1000) > 0) {
             do {
-                snd_seq_event_t *ev;
                 // Read available events without blocking
                 err = snd_seq_event_input_pending(m_pSeqHandle, 1);
-                while (err > 0) {
-                    if (snd_seq_event_input(m_pSeqHandle, &ev) >= 0) {
-                        // Process the event
-                        std::cout <<
-                            "Received MIDI event type: " <<
-                            snd_seq_event_type_name(ev->type) <<
-                            std::endl <<
-                            std::flush;
-                        snd_seq_free_event(ev);
-                    }
-                    err = snd_seq_event_input_pending(seq_handle, 1);
+                if (err > 0) {
+                    this->readMidiEvent();
                 }
             } while (err > 0);
         } else {
