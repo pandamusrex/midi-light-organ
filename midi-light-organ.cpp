@@ -1,5 +1,11 @@
 #include <iostream>
+
+// Zeller
 #include "led-matrix.h"
+
+// Image Magick
+#include <Magick++.h>
+#include <magick/image.h>
 
 using rgb_matrix::RGBMatrix;
 using rgb_matrix::Canvas;
