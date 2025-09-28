@@ -55,16 +55,36 @@ void MidiListener::doWork() {
 }
 
 void MidiListener::openMidi() {
-    snd_seq_open(&m_pSeqHandle, "default", SND_SEQ_OPEN_INPUT, 0);
+    int err;
 
-    snd_seq_set_client_name(m_pSeqHandle, "Midi Listener");
+    err = snd_seq_open(&m_pSeqHandle, "default", SND_SEQ_OPEN_DUPLEX, 0);
+    if (err < 0) {
+        std::cout << "Unable to open sequencer" << std::endl << std::flush;
+        return;
+    }
+
+    err = snd_seq_set_client_name(m_pSeqHandle, "Midi Listener");
+    if (err < 0) {
+        std::cout << "Unable to set client name" << std::endl << std::flush;
+        return;
+    }
 
     m_nInPort = snd_seq_create_simple_port(m_pSeqHandle, "listen:in",
         SND_SEQ_PORT_CAP_WRITE|SND_SEQ_PORT_CAP_SUBS_WRITE,
         SND_SEQ_PORT_TYPE_APPLICATION
     );
+    if (m_nInPort < 0) {
+        std::cout << "Unable to create input port" << std::endl << std::flush;
+        return;
+    }
 
     m_nPollDescriptorsCount = snd_seq_poll_descriptors_count(m_pSeqHandle, POLLIN);
+    if (m_nPollDescriptorsCount < 0) {
+        std::cout << "Unable to find any input descriptors" << std::endl << std::flush;
+        return;
+    }
+
+    std::cout << "Found " << m_nPollDescriptorsCount << " poll descriptors" << std::endl << std::flush;
 }
 
 void MidiListener::closeMidi() {
