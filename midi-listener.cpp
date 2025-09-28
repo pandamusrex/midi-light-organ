@@ -117,7 +117,7 @@ void MidiListener::readMidiEvent() {
             std::cout << "NOTE ON event on Channel:" <<
                 ev->data.control.channel <<
                 " Note:" <<
-                ev->data.note.note <<
+                static_cast<int>(ev->data.note.note) <<
                 std::endl <<
                 std::flush;
             break;
@@ -125,7 +125,7 @@ void MidiListener::readMidiEvent() {
             std::cout << "NOTE OFF event on Channel:" <<
                 ev->data.control.channel <<
                 " Note:" <<
-                ev->data.note.note <<
+                static_cast<int>(ev->data.note.note) <<
                 std::endl <<
                 std::flush;
             break;

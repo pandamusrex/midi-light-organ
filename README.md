@@ -113,3 +113,55 @@ a MIDI event is NOT available
 a MIDI event is NOT available
 ^Cexiting MidiListener doWork
 ```
+
+## Find the MIDI keyboard and connect it using aconnect
+
+```
+pi@raspberrypi:~ $ aconnect -l
+client 0: 'System' [type=kernel]
+    0 'Timer           '
+        Connecting To: 142:0
+    1 'Announce        '
+        Connecting To: 142:0
+client 14: 'Midi Through' [type=kernel]
+    0 'Midi Through Port-0'
+client 16: 'CASIO USB-MIDI' [type=kernel,card=0]
+    0 'CASIO USB-MIDI MIDI 1'
+client 128: 'Midi Listener' [type=user,pid=2019]
+    0 'listen:in       '
+client 142: 'PipeWire-System' [type=user,pid=1694]
+    0 'input           '
+        Connected From: 0:1, 0:0
+client 143: 'PipeWire-RT-Event' [type=user,pid=1694]
+    0 'input           '
+pi@raspberrypi:~ $ aconnect "CASIO USB-MIDI" "Midi Listener"
+pi@raspberrypi:~ $ aconnect -l
+client 0: 'System' [type=kernel]
+    0 'Timer           '
+        Connecting To: 142:0
+    1 'Announce        '
+        Connecting To: 142:0
+client 14: 'Midi Through' [type=kernel]
+    0 'Midi Through Port-0'
+client 16: 'CASIO USB-MIDI' [type=kernel,card=0]
+    0 'CASIO USB-MIDI MIDI 1'
+        Connecting To: 128:0
+client 128: 'Midi Listener' [type=user,pid=2019]
+    0 'listen:in       '
+        Connected From: 16:0
+client 142: 'PipeWire-System' [type=user,pid=1694]
+    0 'input           '
+        Connected From: 0:1, 0:0
+client 143: 'PipeWire-RT-Event' [type=user,pid=1694]
+    0 'input           '
+```
+
+## Disconnect when finished
+
+```
+pi@raspberrypi:~ $ aconnect -d "CASIO USB-MIDI" "Midi Listener"
+```
+
+## Useful links
+
+- https://fundamental-code.com/midi/
