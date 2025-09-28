@@ -34,13 +34,18 @@ pi@raspberrypi:~/Repos/ $ git clone https://github.com/pandamusrex/midi-light-or
 
 ### Install and build Zeller in a peer folder to this repo
 
+```
 pi@raspberrypi:~/Repos/ $ git clone https://github.com/hzeller/rpi-rgb-led-matrix.git
 pi@raspberrypi:~/Repos/ $ cd rpi-rgb-led-matrix
 pi@raspberrypi:~/Repos/ $ make
+```
 
 ### Install MagicK
+
+```
 sudo apt-get update
 sudo apt-get install libgraphicsmagick++-dev libwebp-dev -y
+```
 
 ### And then build this
 
