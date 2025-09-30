@@ -1,4 +1,4 @@
-CXXFLAGS=-W -Wall -Wextra -Wno-unused-parameter -D_FILE_OFFSET_BITS=64
+CXXFLAGS=-03 -W -Wall -Wextra -Wno-unused-parameter -D_FILE_OFFSET_BITS=64
 
 # Zeller RGB
 RGB_LIB_DISTRIBUTION=../rpi-rgb-led-matrix

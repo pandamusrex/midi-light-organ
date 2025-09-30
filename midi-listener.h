@@ -2,7 +2,6 @@
 #define MIDI_LISTENER_H
 
 #include <atomic>
-#include <mutex>
 
 #include <alsa/asoundlib.h>
 

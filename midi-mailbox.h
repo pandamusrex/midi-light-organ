@@ -2,6 +2,7 @@
 #define MIDI_MAILBOX_H
 
 #include <vector>
+#include <pthread.h>
 
 #include <alsa/asoundlib.h>
 
@@ -25,7 +26,7 @@ class MidiMailbox {
         ~MidiMailbox();
 
         std::vector<snd_seq_event_t> *m_pMailbox;
-        std::mutex m_mtx; // Mutex to protect internal state
+        pthread_mutex_t m_mtx; // Mutex to protect internal state
 };
 
 #endif
