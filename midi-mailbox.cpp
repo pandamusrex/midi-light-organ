@@ -19,8 +19,8 @@ bool MidiMailbox::dequeueMessage(snd_seq_event_t &ev) {
         return false;
     }
 
-    ev = m_pMailbox[0]; // Get from beginning of vector
-    m_pMailbox.erase(m_pMailbox.begin());
+    ev = m_pMailbox->front(); // Get from beginning of vector
+    m_pMailbox->erase(m_pMailbox->begin());
 
     return true;
 }
