@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "midi-listener.h"
+#include "midi-mailbox.h"
 
 MidiListener::MidiListener() {
     m_pSignallingBool = 0;
@@ -96,6 +97,10 @@ void MidiListener::readMidiEvent() {
     snd_seq_event_t *ev;
 
     snd_seq_event_input(m_pSeqHandle, &ev);
+
+    MidiMailbox& m = MidiMailbox::getInstance();
+    m.enqueueMessage(ev);
+
     switch (ev->type) {
         case SND_SEQ_EVENT_CONTROLLER:
             std::cout << "CONTROL event on Channel:" <<
