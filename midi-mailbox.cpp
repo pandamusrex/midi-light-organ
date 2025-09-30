@@ -10,7 +10,7 @@ MidiMailbox::~MidiMailbox() {
 
 void MidiMailbox::enqueueMessage(snd_seq_event_t *ev) {
     std::lock_guard<std::mutex> lock(m_mtx); // Acquire lock for thread-safe access
-    m_pMailbox->insert(*ev);
+    m_pMailbox->push_back(*ev); // Add to end of vector
 }
 
 bool MidiMailbox::dequeueMessage(snd_seq_event_t &ev) {
@@ -19,8 +19,8 @@ bool MidiMailbox::dequeueMessage(snd_seq_event_t &ev) {
         return false;
     }
 
-    ev = m_pMailbox->back();
-    m_pMailbox->pop_back();
+    ev = m_pMailbox[0]; // Get from beginning of vector
+    m_pMailbox.erase(m_pMailbox.begin());
 
     return true;
 }
