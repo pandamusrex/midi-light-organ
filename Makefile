@@ -1,4 +1,4 @@
-CXXFLAGS=-O3 -W -Wall -Wextra -Wno-unused-parameter -D_FILE_OFFSET_BITS=64
+CXXFLAGS=-W -Wall -Wextra -Wno-unused-parameter -D_FILE_OFFSET_BITS=64
 
 # Zeller RGB
 RGB_LIB_DISTRIBUTION=../rpi-rgb-led-matrix
@@ -23,7 +23,7 @@ midi-light-organ.o: midi-light-organ.cpp
 	g++ $(CXXFLAGS) -I$(RGB_INCDIR) $(MAGICK_CXXFLAGS) -c midi-light-organ.cpp
 
 midi-listener.o: midi-listener.cpp
-	g++ $(CXXFLAGS) $(MAGICK_CXXFLAGS) -c midi-listener.cpp
+	g++ $(CXXFLAGS) -c midi-listener.cpp
 
 midi-mailbox.o: midi-mailbox.cpp
-	g++ $(CXXFLAGS) $(MAGICK_CXXFLAGS) -c midi-mailbox.cpp
+	g++ $(CXXFLAGS) -c midi-mailbox.cpp
