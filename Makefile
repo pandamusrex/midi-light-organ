@@ -16,7 +16,7 @@ AV_LDFLAGS=$(shell pkg-config --cflags --libs  libavcodec libavformat libswscale
 
 all: midi-light-organ
 
-midi-light-organ: midi-light-organ.o midi-listener.o midi-mailbox.o $(RGB_LIBRARY)
+midi-light-organ: midi-light-organ.o midi-listener.o midi-mailbox.o note-renderer.o $(RGB_LIBRARY)
 	g++ -o midi-light-organ midi-light-organ.o midi-listener.o midi-mailbox.o note-renderer.o $(RGB_LDFLAGS) $(MAGICK_LDFLAGS) $(LDFLAGS) -lasound
 
 midi-light-organ.o: midi-light-organ.cpp
