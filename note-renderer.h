@@ -1,6 +1,7 @@
 #ifndef NOTE_RENDERER_H
 #define NOTE_RENDERER_H
 
+#include <atomic>
 #include <vector>
 #include <pthread.h>
 

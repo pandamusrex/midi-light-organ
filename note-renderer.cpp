@@ -17,7 +17,7 @@ void NoteRenderer::doWork() {
     MidiMailbox& m = MidiMailbox::getInstance();
 
     do {
-        if (m.dequeueMessage(&ev)) {
+        if (m.dequeueMessage(ev)) {
             if (ev.type == SND_SEQ_EVENT_NOTEON) {
                 this->renderNote(ev.data.note.note, true);
             }
