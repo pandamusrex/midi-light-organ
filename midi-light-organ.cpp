@@ -17,6 +17,7 @@
 #include <magick/image.h>
 
 MidiListener *pMidiListener = NULL;
+NoteRenderer *pNoteRenderer = NULL;
 
 std::atomic_bool signalled = false;
 static void InterruptHandler(int signo) {
