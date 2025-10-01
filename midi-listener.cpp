@@ -101,40 +101,40 @@ void MidiListener::readMidiEvent() {
     MidiMailbox& m = MidiMailbox::getInstance();
     m.enqueueMessage(ev);
 
-    switch (ev->type) {
-        case SND_SEQ_EVENT_CONTROLLER:
-            std::cout << "CONTROL event on Channel:" <<
-                ev->data.control.channel <<
-                " Value:" <<
-                ev->data.control.value <<
-                std::endl <<
-                std::flush;
-            break;
-        case SND_SEQ_EVENT_PITCHBEND:
-            std::cout << "PITCHBEND event on Channel:" <<
-                ev->data.control.channel <<
-                " Value:" <<
-                ev->data.control.value <<
-                std::endl <<
-                std::flush;
-            break;
-        case SND_SEQ_EVENT_NOTEON:
-            std::cout << "NOTE ON event on Channel:" <<
-                ev->data.control.channel <<
-                " Note:" <<
-                static_cast<int>(ev->data.note.note) <<
-                std::endl <<
-                std::flush;
-            break;
-        case SND_SEQ_EVENT_NOTEOFF:
-            std::cout << "NOTE OFF event on Channel:" <<
-                ev->data.control.channel <<
-                " Note:" <<
-                static_cast<int>(ev->data.note.note) <<
-                std::endl <<
-                std::flush;
-            break;
-    }
+    // switch (ev->type) {
+    //     case SND_SEQ_EVENT_CONTROLLER:
+    //         std::cout << "CONTROL event on Channel:" <<
+    //             ev->data.control.channel <<
+    //             " Value:" <<
+    //             ev->data.control.value <<
+    //             std::endl <<
+    //             std::flush;
+    //         break;
+    //     case SND_SEQ_EVENT_PITCHBEND:
+    //         std::cout << "PITCHBEND event on Channel:" <<
+    //             ev->data.control.channel <<
+    //             " Value:" <<
+    //             ev->data.control.value <<
+    //             std::endl <<
+    //             std::flush;
+    //         break;
+    //     case SND_SEQ_EVENT_NOTEON:
+    //         std::cout << "NOTE ON event on Channel:" <<
+    //             ev->data.control.channel <<
+    //             " Note:" <<
+    //             static_cast<int>(ev->data.note.note) <<
+    //             std::endl <<
+    //             std::flush;
+    //         break;
+    //     case SND_SEQ_EVENT_NOTEOFF:
+    //         std::cout << "NOTE OFF event on Channel:" <<
+    //             ev->data.control.channel <<
+    //             " Note:" <<
+    //             static_cast<int>(ev->data.note.note) <<
+    //             std::endl <<
+    //             std::flush;
+    //         break;
+    // }
 
     snd_seq_free_event(ev);
 }

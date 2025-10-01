@@ -7,6 +7,7 @@
 #include "signal.h"
 
 #include "midi-listener.h"
+#include "note-renderer.h"
 
 // Zeller
 #include "led-matrix.h"
@@ -111,20 +112,30 @@ int main(int argc, char **argv) {
 
     Magick::InitializeMagick(0);
 
+    // Show "splash" screen for 3 seconds
     ImageVector images = LoadImageAndScaleImage("media/pandamusrex-128x32.png", 128, 32);
     CopyImageToCanvas(images[0], canvas);
+    sleep(3);
+    canvas->Clear();
 
     // Start listening to MIDI
     pMidiListener = new MidiListener();
     pMidiListener->setSignallingBool(&signalled);
-
-    // Start MIDI Thread
     std::thread midiThread(&MidiListener::doWork, pMidiListener);
 
-    // Join all the threads and wait for them to complete (or signalling to occur)
-    midiThread.join();
+    // Start Rendering Thread
+    pNoteRenderer = new NoteRenderer(canvas);
+    pNoteRenderer->setSignallingBool(&signalled);
+    std::thread renderThread(&NoteRenderer::doWork, pNoteRenderer);
 
+    // Join all the threads and wait for signalling to occur
+    midiThread.join();
+    renderThread.join();
+
+    // Signalled, let's clean things up
     canvas->Clear();
+    delete pMidiListener;
+    delete pNoteRenderer;
     delete canvas;
 
     return 0;
