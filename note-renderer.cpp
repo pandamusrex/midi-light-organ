@@ -2,7 +2,7 @@
 
 #include "midi-mailbox.h"
 
-NoteRenderer::NoteRenderer(pCanvas) : m_pCanvas(pCanvas) {
+NoteRenderer::NoteRenderer(rgb_matrix::Canvas *pCanvas) : m_pCanvas(pCanvas) {
     m_pSignallingBool = 0;
 }
 
