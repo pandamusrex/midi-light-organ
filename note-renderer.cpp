@@ -78,14 +78,24 @@ void NoteRenderer::renderNote(int nNote, bool isOn) {
     int y0 = 1 + row * 5;
 
     // Compute the color
+    int r = 0;
+    int g = 0;
+    int b = 0;
 
-    // TODO: Rainbow it like in the movie. Just red for now.
-    int r = isOn ? 255 : 0;
+    if (isOn) {
+        r = 255;
+        if (col < 6) {
+            g = 255 - (255 * col / 5);
+            b = 255 * col / 5;
+        } else {
+            b = 255 * (11 - col) / 5;
+        }
+    }
 
     // Draw it
     for (int x = x0; x < x0 + 10; x++) {
         for (int y = y0; y < y0 + 5; y++) {
-            m_pCanvas->SetPixel(x, y, r, 0, 0);
+            m_pCanvas->SetPixel(x, y, r, g, b);
         }
     }
 }
